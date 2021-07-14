@@ -1,15 +1,15 @@
-Will be ignored:
+## Will be ignored:
 
-Local .terraform directories
+* Local .terraform directories
 
-.tfstate files
+* .tfstate files
 
-Crash log files
+* Crash log files
 
-.tfvars files
+* .tfvars files
 
-override files
+* override files
 
-tfplan files
+* tfplan files
 
-CLI configuration files
+* CLI configuration files
