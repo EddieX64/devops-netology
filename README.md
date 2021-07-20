@@ -13,3 +13,5 @@ override files
 tfplan files
 
 CLI configuration files
+
+NEW LINE
