@@ -15,3 +15,5 @@ tfplan files
 CLI configuration files
 
 NEW LINE
+
+ONE MORE LINE
