@@ -1,9 +1,9 @@
 5. По умолчанию выделено 1024 Мб RAM и 2 CPU
 
-6. ```config.vm.provider "virtualbox" do |v|
+6. config.vm.provider "virtualbox" do |v|
 	  v.memory = 2048
 	  v.cpus = 2
-	  ```
+	  
 7. HISTFILESIZE, в мануале указывается на 703 строке
 
 8. ignoreboth — использовать опции ‘ignorespace’ и ‘ignoredups’
@@ -17,11 +17,11 @@
 
 11. конструкция [[ -d /tmp ]] проверяет наличие директории /tmp
 
-12. ```mkdir /tmp/new_path_directory/
+12. mkdir /tmp/new_path_directory/
 cp /bin/bash /tmp/new_path_directory
 PATH=/tmp/new_path_directory:$PATH
 type -a bash
-```
+
 
 13. at используется для назначения выполнения разового задания в определенной время.
 batch используется для выполнения разового задания, когда средняя загрузка опускается ниже 0,8.
