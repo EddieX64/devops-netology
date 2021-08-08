@@ -3,8 +3,7 @@
 6. ```
 	config.vm.provider "virtualbox" do |v|
 	  v.memory = 2048
-	  v.cpus = 2
-```
+	  v.cpus = 2 ```
  
 7. HISTFILESIZE, в мануале указывается на 703 строке
 
