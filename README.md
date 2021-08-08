@@ -19,8 +19,7 @@ ignoredups — не сохранять строки, совпадающие с �
 
 11. конструкция [[ -d /tmp ]] проверяет наличие директории /tmp
 
-12. ```
-mkdir /tmp/new_path_directory/
+12. ```mkdir /tmp/new_path_directory/
 cp /bin/bash /tmp/new_path_directory
 PATH=/tmp/new_path_directory:$PATH
 type -a bash
