@@ -18,12 +18,10 @@
 
 11. конструкция [[ -d /tmp ]] проверяет наличие директории /tmp
 
-12.  ```
-mkdir /tmp/new_path_directory/
+12.  ```mkdir /tmp/new_path_directory/
 cp /bin/bash /tmp/new_path_directory
 PATH=/tmp/new_path_directory:$PATH
-type -a bash
-```
+type -a bash```
 
 13. at используется для назначения выполнения разового задания в определенной время.
 batch используется для выполнения разового задания, когда средняя загрузка опускается ниже 0,8.
