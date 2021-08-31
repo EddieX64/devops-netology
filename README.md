@@ -1,53 +1,34 @@
-1. Функция `chdir("/tmp")`
-
-2. Команда `file` использует "magic patterns", которые находятся в `/usr/share/misc/magic.mgc` или в `/usr/share/misc/magic`
-
-3. `lsof | grep deleted` Находим pid процесса, который использует удаленный файл и опустошаем его `> /proc/*pid*/fd/*x*`
-
-4. Зомби-процессы не потребляют никаких ресурсов, кроме записей в таблице процессов.
-
-5. После отработки команды `opensnoop-bpfcc -T` в течение секунды, видим вызовы к следующим файлам:
+1. Предварительно создаем директорию и файл `/etc/sysconfig/node_exporter` и добавляем в него переменную OPTIONS для запуска с опциями при необходимости
 ```
-/proc/interrupts
-/proc/stat
-/proc/irq/20/smp_affinity
-/proc/irq/11/smp_affinity
-/proc/irq/0/smp_affinity
-/proc/irq/1/smp_affinity
-/proc/irq/4/smp_affinity
-/proc/irq/8/smp_affinity
-/proc/irq/12/smp_affinity
-/proc/irq/14/smp_affinity
-/proc/irq/15/smp_affinity
-/var/run/utmp
-/usr/local/share/dbus-1/system-services
-/usr/share/dbus-1/system-services
-/lib/dbus-1/system-services
-/var/lib/snapd/dbus-1/system-services/
-/proc/574/cgroup
+[Unit]
+Description=Node Exporter
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/node_exporter
+ExecStart=/usr/local/bin/node_exporter $OPTIONS
+
+[Install]
+WantedBy=multi-user.target
 ```
+systemctl enable node_exporter
+systemctl start node_exporter
 
-6. `uname -a` использует системный вызов функции uname(). "Part of the utsname information is also accessible via /proc/sys/kernel/{ostype, hostname, osrelease, version, domainname}."
+2. Все метрики, начинающиеся на `node_cpu, process_cpu, node_memory, node_network, node_disk`
 
-7. Разница между `;` и `&&` в том, что `;` - оператор безусловного последовательного выполнения команд, в то время как при `&&` - команда не выполняется, если предыдущая выполнилась неуспешно. Смысл использовать `&&` после ввода команды `set -e` есть, т.к. поведение оператора `&&` не меняется, но если команда вернула не non-zero exit-code, то мы выходим из под текущего юзера.
+3. В веб-интерфейсе Netdata видим различные метрики, которые собирает утилита, такие как `CPU, Memory, Disk, Network, Interfaces, Power supply` и т.д.
 
-8. `set -euxo pipefail`
+4. `dmesg -T | grep -i virtual` видим, что DMI = Virtualbox, а также systemd[1] detected virtualization oracle. Соответсвенно при помощи `dmesg` можно понять, запущена ли ОС на системе виртуализации.
+
+5. `ulimit` используется для ресурсов, занятых процессом запуска оболочки, и может использоваться для установки системных ограничений. 
+`ulimit -a` по умолчанию выставлено значение open files (fs.nr_open) = 1024 в мягком лимите. `ulimit -aH` по умолчанию выставлено значение open files (fs.nr_open) = 1048576 в жестком лимите. Максимальное значение не может превышать жесткого лимита.
+
+6. Вводим команду `screen`, изолируем текущую сессию `unsahre -f --pid --mount-proc sleep 1h` . Открываем еще одну сессию терминала, `ps aux | grep sleep` видим из хостовой системы pid 5147 процесса `sleep 1h`, ответвленного от `unshare`, вводим `nsenter --target 5147 --pid --mount` и попадаем обратно в изолированную сессию с процессом `sleep 1h`, который имеет pid 1, проверяем `ps aux`
+
+7. Данная команда определяет функцию `:`, которая создаст еще два форка себя бесконечно. Автоматической стабилизации помог механизм контроллера количества процессов (Process Number Contorller), который используется, чтобы позволить иерархии `cgroup` останавливать любые новые процессы из `fork () 'd` или `clone ()' d` после достижения определенного предела.
 ```
--e  выполнять exit при выполнении команды с non-zero exit code
--u  раcценивать необъявленные переменные как ошибку
--x  выводить команды и аргументы по мере их выполнения
--o  дополнительная опция переменной, в нашем случае pipefail.
+mkdir -p /sys/fs/cgroup/pids/parent/child
+echo 2 > /sys/fs/cgroup/pids/parent/pids.max
+echo $$ > /sys/fs/cgroup/pids/parent/cgroup.procs
+cat /sys/fs/cgroup/pids/parent/pids.current
 ```
-pipefail - возвращаемое значение pipe это статус последней команды, которая завершилась с non-zero exit-code или 0, если ни одна команда не завершилась с non-zero exit-code.
-Другими словами, если любая команда выполняется с non-zero exit-code, то скрипт прерывается. В скриптах полезно использовать для контроля выполнения всех условий.
-
-9. Наиболее часто встречающийся статус - S, что значит прерываемый сон процесса (процесс ожидает события)
- Дополнительные статусы означают:
- ```
- <  высокий приоритет 
- N  низкий приоритет
- L  имеет заблокированные страницы в памяти
- s  лидер сессии
- l  многопоточный процесс
- +  находится в группе foreground
- ```
+Данные команды позволят создать иерархию `cgroup`, установить лимиты и прикрепить процессы
