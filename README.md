@@ -10,8 +10,8 @@ ExecStart=/usr/local/bin/node_exporter $OPTIONS
 [Install]
 WantedBy=multi-user.target
 ```
-systemctl enable node_exporter
-systemctl start node_exporter
+`systemctl enable node_exporter`
+`systemctl start node_exporter`
 
 2. Все метрики, начинающиеся на `node_cpu, process_cpu, node_memory, node_network, node_disk`
 
