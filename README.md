@@ -37,7 +37,7 @@
 13. `wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz`
 
 14. 
-    ```
+```
 root@vagrant:/tmp/new# lsblk
 NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
 sda                    8:0    0   64G  0 disk
@@ -58,7 +58,7 @@ sdc                    8:32   0  2.5G  0 disk
 └─sdc2                 8:34   0  511M  0 part
   └─md1                9:1    0 1018M  0 raid0
     └─vgtest-lv_test 253:2    0  100M  0 lvm   /tmp/new
-	```
+```
 
 15. ```
 gzip -t /tmp/new/test.gz
@@ -71,15 +71,15 @@ echo $?
 17. `mdadm --fail /dev/md0 /dev/sdb1`
 
 18.  
-	```
+```
 [13868.496662] md/raid1:md0: Disk failure on sdb1, disabling device.
                md/raid1:md0: Operation continuing on 1 devices.
-	```
+```
    
 19. Файл остается доступен, даже с учетом сбоя одного диска в raid-массиве
-	```
+```
 gzip -t /tmp/new/test.gz
 echo $?
 0
-	```
+```
 
