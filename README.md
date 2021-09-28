@@ -60,11 +60,12 @@ sdc                    8:32   0  2.5G  0 disk
     └─vgtest-lv_test 253:2    0  100M  0 lvm   /tmp/new
 ```
 
-15. ```
+15. 
+```
 gzip -t /tmp/new/test.gz
 echo $?
 0
-	```
+```
 
 16. `pvmove /dev/md1 /dev/md0`
 
